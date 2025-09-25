@@ -10,21 +10,29 @@ const resultText = document.getElementById("result-text");
 //Options values for buttons
 let options = {
   fruits: [
-    "Apple",
-    "Blueberry",
-    "Mandarin",
-    "Pineapple",
-    "Watermelon",
+    { word: "Apple", hint: "A red or green fruit, often found in pies." },
+    { word: "Blueberry", hint: "A small blue fruit, grows in clusters." },
+    { word: "Mandarin", hint: "A small citrus fruit, eaten in winter." },
+    { word: "Pineapple", hint: "A tropical fruit with spiky skin." },
+    { word: "Watermelon", hint: "A large fruit, green outside and red inside." },
   ],
-  animals: ["Hedgehog", "Rhinoceros", "Squirrel", "Panther", "Walrus", "Zebra"],
+  animals: [
+    { word: "Rhinoceros", hint: "A large animal with one or two horns." },
+    { word: "Squirrel", hint: "A small pet-like animal that loves nuts." },
+    { word: "Panther", hint: "A black wild cat." },
+    { word: "Zebra", hint: "An African animal with black and white stripes." },
+    { word: "Elephant", hint: "The largest land animal with a trunk." },
+
+  ],
   countries: [
-    "India",
-    "Hungary",
-    "Switzerland",
-    "Zimbabwe",
-    "Dominica",
+    { word: "Canada", hint: "A country in North America, famous for maple syrup." },
+    { word: "India", hint: "A South Asian country known for the Taj Mahal." },
+    { word: "Hungary", hint: "A European country famous for goulash." },
+    { word: "Switzerland", hint: "A country known for chocolates and Alps." },
+    { word: "Zimbabwe", hint: "A country in Africa near Victoria Falls." },
   ],
 };
+
 
 //count
 let winCount = 0;
@@ -61,7 +69,6 @@ const blocker = () => {
 //Word Generator
 const generateWord = (optionValue) => {
   let optionsButtons = document.querySelectorAll(".options");
-  //If optionValur matches the button innerText then highlight the button
   optionsButtons.forEach((button) => {
     if (button.innerText.toLowerCase() === optionValue) {
       button.classList.add("active");
@@ -69,21 +76,21 @@ const generateWord = (optionValue) => {
     button.disabled = true;
   });
 
-  //initially hide letters, clear previous word
   letterContainer.classList.remove("hide");
   userInputSection.innerText = "";
 
   let optionArray = options[optionValue];
-  //choose random word
-  chosenWord = optionArray[Math.floor(Math.random() * optionArray.length)];
-  chosenWord = chosenWord.toUpperCase();
+  let randomObj = optionArray[Math.floor(Math.random() * optionArray.length)];
 
-  //replace every letter with span containing dash
+  chosenWord = randomObj.word.toUpperCase();
+
+  // Show hint
+  document.getElementById("hint-section").innerText = "Hint: " + randomObj.hint;
+
   let displayItem = chosenWord.replace(/./g, '<span class="dashes">_</span>');
-
-  //Display each element as span
   userInputSection.innerHTML = displayItem;
 };
+
 
 //Initial Function (Called when page loads/user presses new game)
 const initializer = () => {
