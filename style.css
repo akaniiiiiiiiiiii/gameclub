@@ -113,3 +113,19 @@ canvas {
 .lose-msg {
   color: #5d0600;
 }
+
+#logo {
+  width: 89px;       
+  height: auto;     
+  position: absolute; 
+  top: 22px;
+  left: 22px;
+  cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  #logo {
+    width: 60px; 
+  }
+}
