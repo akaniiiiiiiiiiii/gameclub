@@ -2,31 +2,273 @@
 <html lang="en">
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-     <img src="1.png" alt="Game Logo" id="logo">
-  </header>
-    <title>Hangman</title>
-    <!-- Google Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
-      rel="stylesheet"
-    />
-    <!-- Stylesheet -->
-    <link rel="stylesheet" href="style.css" />
+    <meta charset="utf-8" />
+    <title>Hangman - Breast Cancer Awareness</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+      * { padding: 0; margin: 0; box-sizing: border-box; font-family: "Poppins", sans-serif; }
+      body { background-color: #FBEFF2; }
+      .container { font-size: 16px; background-color: #ff9fbf; width: 90vw; max-width: 34em; position: absolute; transform: translate(-50%, -50%); top: 50%; left: 50%; padding: 3em; border-radius: 0.6em; box-shadow: 0 1.2em 2.4em rgba(255,255,255,.25); }
+      #options-container { text-align: center; }
+      #options-container div { width: 100%; display: flex; justify-content: space-between; margin: 1.2em 0 2.4em 0; }
+      #options-container button { padding: 0.6em 1.2em; border: 3px solid #ffffff; background-color: #ffffff; color: #000000; border-radius: 0.3em; text-transform: capitalize; }
+      #options-container button:disabled { border: 3px solid #000000; color: #d1c6c6; background-color: #efefef; }
+      #options-container button.active { background-color: #ffffff; border: 3px solid #000000; color: #000000; }
+      .letter-container { width: 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6em; }
+      #letter-container button { height: 2.4em; width: 2.4em; border-radius: 0.3em; background-color: #ffffff; }
+      .new-game-popup { background-color: #ff9fbf; position: absolute; left: 0; top: 0; height: 100%; width: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; border-radius: 0.6em; }
+      #user-input-section { display: flex; justify-content: center; font-size: 1.8em; margin: 0.6em 0 1.2em 0; }
+      canvas { display: block; margin: auto; border: 2px solid #000000; }
+      .hide { display: none; }
+      #result-text h2 { font-size: 1.8em; text-align: center; }
+      #result-text p { font-size: 1.25em; margin: 1em 0 2em 0; }
+      #result-text span { font-weight: 600; }
+      #new-game-button { font-size: 1.25em; padding: 0.5em 1em; background-color: #ffffff; border: 3px solid #000000; color: #000000; border-radius: 0.2em; }
+      .win-msg { color: #21004f; }
+      .lose-msg { color: #5d0600; }
+      .restart-btn { display: block; margin: 1.2em auto 0 auto; padding: 0.6em 1.2em; font-size: 1em; background-color: #ffffff; color: #515151; border: 3px solid #515151; border-radius: 0.3em; cursor: pointer; transition: background 0.3s; }
+      .restart-btn:hover { background-color: #e6e6e6; }
+      #lang-buttons { display:flex; gap:0.6em; justify-content:center; margin-bottom:0.6em; }
+      .lang-btn { padding: 0.4em 0.8em; border-radius:0.25em; border:2px solid #fff; background:#fff; cursor:pointer; }
+    </style>
   </head>
   <body>
     <div class="container">
+      <h2 style="text-align:center; margin-bottom:0.8em; font-size:1.5em;">Select Language / Choisissez la langue</h2>
+      <div id="lang-buttons">
+        <button id="en-btn" class="lang-btn">English</button>
+        <button id="fr-btn" class="lang-btn">Français</button>
+      </div>
+
       <div id="options-container"></div>
       <div id="letter-container" class="letter-container hide"></div>
       <div id="user-input-section"></div>
-      <canvas id="canvas"></canvas>
+      <canvas id="canvas" width="150" height="150"></canvas>
       <div id="new-game-container" class="new-game-popup hide">
         <div id="result-text"></div>
         <button id="new-game-button">New Game</button>
       </div>
-      <div id="hint-section"></div>
-
+      <div id="hint-section" style="text-align:center; margin-top:0.8em"></div>
+      <button id="restart-button" class="restart-btn">Restart</button>
     </div>
-    <!-- Script -->
-    <script src="script.js"></script>
+
+    <script>
+      // --- Elements
+      const letterContainer = document.getElementById("letter-container");
+      const optionsContainer = document.getElementById("options-container");
+      const userInputSection = document.getElementById("user-input-section");
+      const newGameContainer = document.getElementById("new-game-container");
+      const newGameButton = document.getElementById("new-game-button");
+      const canvas = document.getElementById("canvas");
+      const resultText = document.getElementById("result-text");
+      const restartButton = document.getElementById("restart-button");
+      const hintSection = document.getElementById("hint-section");
+      const enBtn = document.getElementById("en-btn");
+      const frBtn = document.getElementById("fr-btn");
+
+      // --- Language state
+      let language = 'en'; // 'en' or 'fr'
+
+      // --- Word lists: English
+      const optionsEn = {
+        hope: [
+          { word: "Courage", hint: "Bravery in the face of fear." },
+          { word: "Warrior", hint: "Someone who fights with strength." },
+          { word: "Victory", hint: "Winning the battle." },
+          { word: "Fighter", hint: "Someone who never gives up." },
+          { word: "Brave", hint: "Having strength and courage." }
+        ],
+        flowers: [
+          { word: "Rose", hint: "A beautiful flower, often pink or red." },
+          { word: "Daisy", hint: "A simple white flower with yellow center." },
+          { word: "Lily", hint: "An elegant flower, symbol of hope." },
+          { word: "Tulip", hint: "A spring flower with bright colors." },
+          { word: "Peony", hint: "A large, soft pink flower." }
+        ],
+        support: [
+          { word: "Family", hint: "People who love and care for you." },
+          { word: "Friend", hint: "Someone who stands by your side." },
+          { word: "Sister", hint: "A special bond between women." },
+          { word: "Care", hint: "Showing love and kindness." },
+          { word: "Love", hint: "The strongest feeling of all." }
+        ]
+      };
+
+      // --- Word lists: French
+      const optionsFr = {
+        hope: [
+          { word: "Courage", hint: "Bravoure face à la peur." },
+          { word: "Guerrière", hint: "Celle qui se bat avec force." },
+          { word: "Victoire", hint: "Gagner la bataille." },
+          { word: "Battante", hint: "Celle qui n'abandonne jamais." },
+          { word: "Brave", hint: "Avoir de la force et du courage." }
+        ],
+        flowers: [
+          { word: "Rose", hint: "Une belle fleur, souvent rose ou rouge." },
+          { word: "Marguerite", hint: "Une fleur blanche simple avec un centre jaune." },
+          { word: "Lys", hint: "Une fleur élégante, symbole d'espoir." },
+          { word: "Tulipe", hint: "Une fleur de printemps aux couleurs vives." },
+          { word: "Pivoine", hint: "Une grande fleur rose et douce." }
+        ],
+        support: [
+          { word: "Famille", hint: "Les gens qui vous aiment et prennent soin de vous." },
+          { word: "Amie", hint: "Quelqu'un qui reste à vos côtés." },
+          { word: "Sœur", hint: "Un lien spécial entre femmes." },
+          { word: "Soin", hint: "Montrer de l'amour et de la gentillesse." },
+          { word: "Amour", hint: "Le sentiment le plus fort de tous." }
+        ]
+      };
+
+      // counts
+      let winCount = 0;
+      let count = 0;
+      let chosenWord = "";
+
+      // --- Display option buttons (updates depending on language)
+      const displayOptions = () => {
+        const texts = {
+          en: { select: 'Please Select An Option', newGame: 'New Game', restart: 'Restart' },
+          fr: { select: 'Veuillez sélectionner une option', newGame: 'Nouvelle partie', restart: 'Redémarrer' }
+        };
+
+        optionsContainer.innerHTML = `<h3>${texts[language].select}</h3>`;
+        let buttonCon = document.createElement('div');
+        const currentOptions = language === 'fr' ? optionsFr : optionsEn;
+        for (let value in currentOptions) {
+          buttonCon.innerHTML += `<button class="options" onclick="generateWord('${value}')">${value}</button>`;
+        }
+        optionsContainer.appendChild(buttonCon);
+
+        // Update button labels for new-game / restart if they exist
+        newGameButton.innerText = texts[language].newGame;
+        restartButton.innerText = texts[language].restart;
+      };
+
+      // --- Block all Buttons
+      const blocker = () => {
+        let optionsButtons = document.querySelectorAll('.options');
+        let letterButtons = document.querySelectorAll('.letters');
+        optionsButtons.forEach((button) => { button.disabled = true; });
+        letterButtons.forEach((button) => { button.disabled = true; });
+        newGameContainer.classList.remove('hide');
+      };
+
+      // --- Word Generator
+      const generateWord = (optionValue) => {
+        let optionsButtons = document.querySelectorAll('.options');
+        optionsButtons.forEach((button) => {
+          if (button.innerText.toLowerCase() === optionValue) {
+            button.classList.add('active');
+          }
+          button.disabled = true;
+        });
+
+        letterContainer.classList.remove('hide');
+        userInputSection.innerText = '';
+
+        const currentOptions = language === 'fr' ? optionsFr : optionsEn;
+        let optionArray = currentOptions[optionValue];
+        let randomObj = optionArray[Math.floor(Math.random() * optionArray.length)];
+
+        chosenWord = randomObj.word.toUpperCase();
+
+        // Show hint
+        hintSection.innerText = (language === 'fr' ? 'Indice: ' : 'Hint: ') + randomObj.hint;
+
+        // Replace letters with dashes (keep spaces intact)
+        let displayItem = '';
+        for (let ch of chosenWord) {
+          if (ch === ' ') displayItem += ' ';
+          else displayItem += '<span class="dashes">_</span>';
+        }
+        userInputSection.innerHTML = displayItem;
+      };
+
+      // --- Initializer
+      const initializer = () => {
+        winCount = 0; count = 0; chosenWord = '';
+        userInputSection.innerHTML = '';
+        optionsContainer.innerHTML = '';
+        letterContainer.classList.add('hide');
+        newGameContainer.classList.add('hide');
+        letterContainer.innerHTML = '';
+        hintSection.innerText = '';
+
+        // create letters A-Z
+        for (let i = 65; i < 91; i++) {
+          let button = document.createElement('button');
+          button.classList.add('letters');
+          button.innerText = String.fromCharCode(i);
+          button.addEventListener('click', () => {
+            if (!chosenWord) return;
+            let charArray = chosenWord.split('');
+            let dashes = document.getElementsByClassName('dashes');
+            if (charArray.includes(button.innerText)) {
+              charArray.forEach((char, index) => {
+                if (char === button.innerText) {
+                  dashes[index].innerText = char;
+                  winCount += 1;
+                  if (winCount == charArray.filter(c => c !== ' ').length) {
+                    resultText.innerHTML = `<h2 class='win-msg'>${language==='fr' ? 'Vous avez gagné!!' : 'You Win!!'}</h2><p>${language==='fr' ? 'Le mot était' : 'The word was'} <span>${chosenWord}</span></p>`;
+                    blocker();
+                  }
+                }
+              });
+            } else {
+              count += 1;
+              drawMan(count);
+              if (count == 6) {
+                resultText.innerHTML = `<h2 class='lose-msg'>${language==='fr' ? 'Vous avez perdu!!' : 'You Lose!!'}</h2><p>${language==='fr' ? 'Le mot était' : 'The word was'} <span>${chosenWord}</span></p>`;
+                blocker();
+              }
+            }
+            button.disabled = true;
+          });
+          letterContainer.append(button);
+        }
+
+        displayOptions();
+        let { initialDrawing } = canvasCreator();
+        initialDrawing();
+      };
+
+      // --- Canvas helper
+      const canvasCreator = () => {
+        let context = canvas.getContext('2d');
+        context.beginPath(); context.strokeStyle = '#000'; context.lineWidth = 2;
+        const drawLine = (fromX, fromY, toX, toY) => { context.moveTo(fromX, fromY); context.lineTo(toX, toY); context.stroke(); };
+        const head = () => { context.beginPath(); context.arc(70,30,10,0,Math.PI*2,true); context.stroke(); };
+        const body = () => { drawLine(70,40,70,80); };
+        const leftArm = () => { drawLine(70,50,50,70); };
+        const rightArm = () => { drawLine(70,50,90,70); };
+        const leftLeg = () => { drawLine(70,80,50,110); };
+        const rightLeg = () => { drawLine(70,80,90,110); };
+        const initialDrawing = () => {
+          context.clearRect(0,0,context.canvas.width,context.canvas.height);
+          drawLine(10,130,130,130); drawLine(10,10,10,131); drawLine(10,10,70,10); drawLine(70,10,70,20);
+        };
+        return { initialDrawing, head, body, leftArm, rightArm, leftLeg, rightLeg };
+      };
+
+      // draw the man
+      const drawMan = (count) => {
+        let { head, body, leftArm, rightArm, leftLeg, rightLeg } = canvasCreator();
+        switch (count) {
+          case 1: head(); break; case 2: body(); break; case 3: leftArm(); break; case 4: rightArm(); break; case 5: leftLeg(); break; case 6: rightLeg(); break; default: break;
+        }
+      };
+
+      // --- Events
+      newGameButton.addEventListener('click', initializer);
+      window.onload = initializer;
+      restartButton.addEventListener('click', initializer);
+
+      // Language buttons
+      enBtn.addEventListener('click', () => { language = 'en'; enBtn.disabled = true; frBtn.disabled = false; initializer(); });
+      frBtn.addEventListener('click', () => { language = 'fr'; frBtn.disabled = true; enBtn.disabled = false; initializer(); });
+
+      // Expose generateWord to window so inline onclick works
+      window.generateWord = generateWord;
+    </script>
   </body>
 </html>
