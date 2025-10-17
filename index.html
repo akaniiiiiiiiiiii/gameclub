@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <title>Hangman - Breast Cancer Awareness</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    
     <style>
       * { padding: 0; margin: 0; box-sizing: border-box; font-family: "Poppins", sans-serif; }
       body { background-color: #FBEFF2; }
@@ -30,9 +31,20 @@
       .restart-btn:hover { background-color: #e6e6e6; }
       #lang-buttons { display:flex; gap:0.6em; justify-content:center; margin-bottom:0.6em; }
       .lang-btn { padding: 0.4em 0.8em; border-radius:0.25em; border:2px solid #fff; background:#fff; cursor:pointer; }
+      #logo {
+        width: 90px;            /* Adjust size to your liking */
+        height: auto;
+        position: absolute;     /* Keeps it fixed in place */
+        top: 20px;              /* Distance from top of page */
+        left: 20px;             /* Distance from left of page */
+        cursor: pointer;
+      }
+
     </style>
   </head>
   <body>
+    <img src="This week’s Guest (69).png" alt="Game Logo" id="logo">
+
     <div class="container">
       <h2 style="text-align:center; margin-bottom:0.8em; font-size:1.5em;">Select Language / Choisissez la langue</h2>
       <div id="lang-buttons">
