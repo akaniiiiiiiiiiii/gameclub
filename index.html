@@ -8,8 +8,8 @@
     
     <style>
       * { padding: 0; margin: 0; box-sizing: border-box; font-family: "Poppins", sans-serif; }
-      body { background-color: #FBEFF2; }
-      .container { font-size: 16px; background-color: #ff9fbf; width: 90vw; max-width: 34em; position: absolute; transform: translate(-50%, -50%); top: 50%; left: 50%; padding: 3em; border-radius: 0.6em; box-shadow: 0 1.2em 2.4em rgba(255,255,255,.25); }
+      body { background-color: #001D39; }
+      .container { font-size: 16px; background-color: #D8F0FF; width: 90vw; max-width: 34em; position: absolute; transform: translate(-50%, -50%); top: 50%; left: 50%; padding: 3em; border-radius: 0.6em; box-shadow: 0 1.2em 2.4em rgba(255,255,255,.25); }
       #options-container { text-align: center; }
       #options-container div { width: 100%; display: flex; justify-content: space-between; margin: 1.2em 0 2.4em 0; }
       #options-container button { padding: 0.6em 1.2em; border: 3px solid #ffffff; background-color: #ffffff; color: #000000; border-radius: 0.3em; text-transform: capitalize; }
@@ -43,7 +43,7 @@
     </style>
   </head>
   <body>
-    <img src="This week’s Guest (69).png" alt="Game Logo" id="logo">
+    <img src="1.png" alt="Game Logo" id="logo">
 
     <div class="container">
       <h2 style="text-align:center; margin-bottom:0.8em; font-size:1.5em;">Select Language / Choisissez la langue</h2>
@@ -81,55 +81,56 @@
       // --- Language state
       let language = 'en'; // 'en' or 'fr'
 
-      // --- Word lists: English
-      const optionsEn = {
-        hope: [
-          { word: "Courage", hint: "Bravery in the face of fear." },
-          { word: "Warrior", hint: "Someone who fights with strength." },
-          { word: "Victory", hint: "Winning the battle." },
-          { word: "Fighter", hint: "Someone who never gives up." },
-          { word: "Brave", hint: "Having strength and courage." }
-        ],
-        flowers: [
-          { word: "Rose", hint: "A beautiful flower, often pink or red." },
-          { word: "Daisy", hint: "A simple white flower with yellow center." },
-          { word: "Lily", hint: "An elegant flower, symbol of hope." },
-          { word: "Tulip", hint: "A spring flower with bright colors." },
-          { word: "Peony", hint: "A large, soft pink flower." }
-        ],
-        support: [
-          { word: "Family", hint: "People who love and care for you." },
-          { word: "Friend", hint: "Someone who stands by your side." },
-          { word: "Sister", hint: "A special bond between women." },
-          { word: "Care", hint: "Showing love and kindness." },
-          { word: "Love", hint: "The strongest feeling of all." }
-        ]
-      };
+    // --- Word lists: English
+const optionsEn = {
+  technology: [
+    { word: "Computer", hint: "A device that processes information." },
+    { word: "Internet", hint: "Connects people and data worldwide." },
+    { word: "Robot", hint: "A machine that performs tasks automatically." },
+    { word: "Software", hint: "Programs that make computers useful." },
+    { word: "Network", hint: "A system that connects multiple devices." }
+  ],
+  nature: [
+    { word: "Forest", hint: "A large area covered with trees." },
+    { word: "River", hint: "A natural stream of flowing water." },
+    { word: "Mountain", hint: "A high natural elevation of the earth." },
+    { word: "Ocean", hint: "A vast body of salt water." },
+    { word: "Desert", hint: "A dry, sandy region with little rain." }
+  ],
+  sport: [
+    { word: "Football", hint: "A game played with a round ball and goals." },
+    { word: "Basketball", hint: "A game played with a ball and a hoop." },
+    { word: "Tennis", hint: "Played with rackets and a small ball on a court." },
+    { word: "Swimming", hint: "Moving through water using your body." },
+    { word: "Running", hint: "Moving quickly on foot for sport or exercise." }
+  ]
+};
 
-      // --- Word lists: French
-      const optionsFr = {
-        hope: [
-          { word: "Courage", hint: "Bravoure face à la peur." },
-          { word: "Guerrière", hint: "Celle qui se bat avec force." },
-          { word: "Victoire", hint: "Gagner la bataille." },
-          { word: "Battante", hint: "Celle qui n'abandonne jamais." },
-          { word: "Brave", hint: "Avoir de la force et du courage." }
-        ],
-        flowers: [
-          { word: "Rose", hint: "Une belle fleur, souvent rose ou rouge." },
-          { word: "Marguerite", hint: "Une fleur blanche simple avec un centre jaune." },
-          { word: "Lys", hint: "Une fleur élégante, symbole d'espoir." },
-          { word: "Tulipe", hint: "Une fleur de printemps aux couleurs vives." },
-          { word: "Pivoine", hint: "Une grande fleur rose et douce." }
-        ],
-        support: [
-          { word: "Famille", hint: "Les gens qui vous aiment et prennent soin de vous." },
-          { word: "Amie", hint: "Quelqu'un qui reste à vos côtés." },
-          { word: "Sœur", hint: "Un lien spécial entre femmes." },
-          { word: "Soin", hint: "Montrer de l'amour et de la gentillesse." },
-          { word: "Amour", hint: "Le sentiment le plus fort de tous." }
-        ]
-      };
+// --- Word lists: French
+const optionsFr = {
+  technology: [
+    { word: "Ordinateur", hint: "Un appareil qui traite des informations." },
+    { word: "Internet", hint: "Relie les gens et les données dans le monde entier." },
+    { word: "Robot", hint: "Une machine qui effectue des tâches automatiquement." },
+    { word: "Logiciel", hint: "Des programmes qui rendent les ordinateurs utiles." },
+    { word: "Réseau", hint: "Un système qui relie plusieurs appareils." }
+  ],
+  nature: [
+    { word: "Forêt", hint: "Une grande zone couverte d'arbres." },
+    { word: "Rivière", hint: "Un cours d'eau naturel qui s'écoule." },
+    { word: "Montagne", hint: "Une haute élévation naturelle de la terre." },
+    { word: "Océan", hint: "Une vaste étendue d'eau salée." },
+    { word: "Désert", hint: "Une région sèche et sablonneuse avec peu de pluie." }
+  ],
+  sport: [
+    { word: "Football", hint: "Un jeu joué avec un ballon rond et des buts." },
+    { word: "Basketball", hint: "Un jeu joué avec un ballon et un panier." },
+    { word: "Tennis", hint: "Se joue avec des raquettes et une petite balle sur un court." },
+    { word: "Natation", hint: "Se déplacer dans l'eau en utilisant son corps." },
+    { word: "Course", hint: "Se déplacer rapidement à pied pour le sport ou l'exercice." }
+  ]
+};
+
 
       // counts
       let winCount = 0;
